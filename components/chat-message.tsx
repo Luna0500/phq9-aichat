@@ -13,6 +13,10 @@ export interface ChatMessageProps {
 }
 
 export function ChatMessage({ message, ...props }: ChatMessageProps) {
+  if (message.role === "system") {
+    return
+  }
+  else {
   return (
     <div
       className={cn('group relative mb-4 flex items-start md:-ml-12')}
@@ -74,4 +78,5 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
       </div>
     </div>
   )
+        }
 }
