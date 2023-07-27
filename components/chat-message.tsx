@@ -14,7 +14,9 @@ export interface ChatMessageProps {
 
 export function ChatMessage({ message, ...props }: ChatMessageProps) {
   if (message.role === "system") {
-    return
+    return (
+      <div></div>
+    )
   }
   else {
   return (

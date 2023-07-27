@@ -1,16 +1,10 @@
 import { type UseChatHelpers } from 'ai/react'
-import { kv } from '@vercel/kv'
 
 import { Button } from '@/components/ui/button'
 import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
 import { IconRefresh, IconStop, IconMessage } from '@/components/ui/icons'
 import { FooterText } from '@/components/footer'
-import { getResult1 } from '@/app/api/chat/route'
-import { useLocalStorage } from '@/lib/hooks/use-local-storage'
-
-import { Chat } from './chat'
-//import { getResult1 } from '@/app/api/chat/route'
 
 export interface ChatPanelProps
   extends Pick<

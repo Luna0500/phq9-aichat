@@ -2,16 +2,11 @@ import { kv } from '@vercel/kv'
 import { OpenAIStream, StreamingTextResponse, LangChainStream, Message } from 'ai'
 import { Configuration, OpenAIApi } from 'openai-edge'
 import { OpenAI } from "langchain/llms/openai";
-import { ChatOpenAI } from 'langchain/chat_models/openai'
-import { AIMessage, HumanMessage } from 'langchain/schema'
 
 import { auth } from '@/auth'
 import { nanoid } from '@/lib/utils'
 
-import { PromptTemplate, ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from "langchain/prompts";
-import { ChatPanel } from '@/components/chat-panel';
-import { get } from 'http';
-import { Chat } from '@/components/chat';
+import { PromptTemplate } from "langchain/prompts";
 
 export const runtime = 'edge'
 
@@ -36,29 +31,6 @@ export async function POST(req: Request) {
     configuration.apiKey = previewToken
   }
 
-  
-
-  
-  /*
-  const { stream, handlers } = LangChainStream()
- 
-  const llm = new ChatOpenAI({
-    streaming: true
-  })
-
-  llm
-    .call(
-      (messages as Message[]).map(m =>
-        m.role == 'user'
-          ? new HumanMessage(formattedPrompt)
-          : new AIMessage(m.content)
-      ),
-      {},
-      [handlers]
-    )
-    .catch(console.error)
-
-  */
     const llm = new OpenAI({
       temperature: 0.2,
     });
@@ -79,9 +51,7 @@ export async function POST(req: Request) {
       lastItemPrev = messages[messages.length - 2].content
       lastItemID = messages[messages.length - 2].content.charAt(9)
     }
-    console.log(lastItemPrev)
-    console.log(lastItemID)
-    //console.log(lastItem)
+
     var result = ""
     var formattedPrompt = ""
     const id = json.id ?? nanoid()
@@ -145,7 +115,6 @@ export async function POST(req: Request) {
 
     if (messages.length > 1) {
       messages[messages.length - 1].content = "The Result number for this question is " + result + " and you must Provide it in your response to this." + messages[messages.length - 1].content
-      console.log(messages[messages.length - 1].content)
     }
 
     const res = await openai.createChatCompletion({
@@ -155,7 +124,7 @@ export async function POST(req: Request) {
       stream: true
     })
   
-    console.log(messages)
+
   const stream = OpenAIStream(res, {
     async onCompletion(completion) {
       const title = json.messages[0].content.substring(0, 100)
@@ -176,11 +145,11 @@ export async function POST(req: Request) {
           }
         ]
       }
-      //await kv.hmset(`chat:${id}`, payload)
-      //await kv.zadd(`user:chat:${userId}`, {
-      //  score: createdAt,
-      //  member: `chat:${id}`
-      //})
+      await kv.hmset(`chat:${id}`, payload)
+      await kv.zadd(`user:chat:${userId}`, {
+        score: createdAt,
+        member: `chat:${id}`
+      })
     }
   })
 
