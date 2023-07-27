@@ -114,7 +114,7 @@ export async function POST(req: Request) {
     }
 
     if (messages.length > 1) {
-      messages[messages.length - 1].content = "The Result number for this question is " + result + " and you must Provide it in your response to this." + messages[messages.length - 1].content
+      messages[messages.length - 1].content = "The Result number for this question is " + result + " and you must Provide it in your response to this. Do not apologize." + messages[messages.length - 1].content
     }
 
     const res = await openai.createChatCompletion({
